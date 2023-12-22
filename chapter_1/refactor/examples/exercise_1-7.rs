@@ -5,9 +5,7 @@
 /// replacing each string of one or more blanks with a
 /// single blank.
 ///
-use std::env;
-
-use refactor::{get_content, Character, CharacterVisitee, CharacterVisitor};
+use refactor::{program, CharacterVisitee, CharacterVisitor};
 
 struct SingleBlankVisitor {
     data: String,
@@ -28,42 +26,17 @@ impl CharacterVisitor for SingleBlankVisitor {
         self.data.push(current_char.clone());
         self.last_char = Some(current_char.clone())
     }
+
+    fn results(&self) -> String {
+        self.data.to_string()
+    }
 }
 
 fn main() {
-    let args = env::args();
-    let files: Vec<String>;
+    let mut visitor = SingleBlankVisitor {
+        data: String::new(),
+        last_char: None,
+    };
 
-    if args.len() > 1 {
-        files = args.skip(1).collect();
-    } else {
-        files = vec!["-".to_string()];
-    }
-
-    for (count, file_path) in files.iter().enumerate() {
-        if count > 0 {
-            println!();
-        }
-
-        let file_content = get_content(&file_path).expect("unable to get lines from file_path");
-
-        if file_path.eq(&"-") {
-            // Creating a space between the input and output
-            println!();
-        }
-        let mut visitor = SingleBlankVisitor {
-            data: String::new(),
-            last_char: None,
-        };
-
-        for c in file_content.chars() {
-            let character = Character(c);
-            character.accept(&mut visitor);
-        }
-
-        if files.len() > 1 {
-            println!("File: {}\n", file_path);
-        }
-        print!("{}", visitor.data);
-    }
+    program(&mut visitor);
 }

@@ -26,6 +26,9 @@ impl CharacterVisitor for BlanksTabsNewLinesVisitor {
             self.new_line_count += 1
         }
     }
+    fn results(&self) -> String {
+        "Not used here".to_string()
+    }
 }
 
 fn main() {
