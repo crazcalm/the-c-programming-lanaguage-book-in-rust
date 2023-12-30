@@ -108,6 +108,145 @@ fn print_table(iterator: impl DoubleEndedIterator<Item = (f32, f32)>, header: (&
     }
 }
 
+fn print_table2(iterator: impl Iterator<Item = (f32, f32)>, header: (&str, &str)) {
+    println!("{:>3} {:>6}", header.0, header.1);
+    for (fahr, cels) in iterator {
+        println!("{fahr:3.0} {cels:6.1}")
+    }
+}
+
+/*
+Second attempt -- Create Iterator objects
+
+I am happy I was able to do it, but I am mad that I was not able
+to do it with references.
+*/
+
+trait Bounds {
+    fn lower_bound(&self) -> f32;
+    fn upper_bound(&self) -> f32;
+}
+
+trait TempConversion {
+    fn convert(&self, input: f32) -> f32;
+}
+
+#[derive(Copy, Clone)]
+struct FahrToCels2 {
+    lower: f32,
+    upper: f32,
+}
+
+impl Bounds for FahrToCels2 {
+    fn lower_bound(&self) -> f32 {
+        self.lower
+    }
+    fn upper_bound(&self) -> f32 {
+        self.upper
+    }
+}
+
+impl Default for FahrToCels2 {
+    fn default() -> Self {
+        Self {
+            lower: 0.0,
+            upper: 300.0,
+        }
+    }
+}
+
+impl TempConversion for FahrToCels2 {
+    fn convert(&self, input: f32) -> f32 {
+        (5.0 / 9.0) * (input - 32.0)
+    }
+}
+
+#[derive(Copy, Clone)]
+struct CelsToFahr2 {
+    lower: f32,
+    upper: f32,
+}
+
+impl Bounds for CelsToFahr2 {
+    fn lower_bound(&self) -> f32 {
+        self.lower
+    }
+    fn upper_bound(&self) -> f32 {
+        self.upper
+    }
+}
+
+impl Default for CelsToFahr2 {
+    fn default() -> Self {
+        Self {
+            lower: -20.0,
+            upper: 150.0,
+        }
+    }
+}
+
+impl TempConversion for CelsToFahr2 {
+    fn convert(&self, input: f32) -> f32 {
+        input * (9.0 / 5.0) + 32.0
+    }
+}
+
+struct ForwardIterator<T: Bounds + TempConversion> {
+    data: T,
+    step: f32,
+    state: f32,
+}
+
+impl<T: Bounds + TempConversion> ForwardIterator<T> {
+    fn new(data: T, step: f32) -> Self {
+        let state = data.lower_bound();
+        Self { data, step, state }
+    }
+}
+
+impl<T: Bounds + TempConversion> Iterator for ForwardIterator<T> {
+    type Item = (f32, f32);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.state <= self.data.upper_bound() {
+            true => {
+                let result = (self.state, self.data.convert(self.state));
+                self.state += self.step;
+                Some(result)
+            }
+            false => None,
+        }
+    }
+}
+
+struct BackwardsIterator<T: Bounds + TempConversion> {
+    data: T,
+    step: f32,
+    state: f32,
+}
+
+impl<T: Bounds + TempConversion> BackwardsIterator<T> {
+    fn new(data: T, step: f32) -> Self {
+        let state = data.upper_bound();
+        Self { data, step, state }
+    }
+}
+
+impl<T: Bounds + TempConversion> Iterator for BackwardsIterator<T> {
+    type Item = (f32, f32);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.state >= self.data.lower_bound() {
+            true => {
+                let result = (self.state, self.data.convert(self.state));
+                self.state -= self.step;
+                Some(result)
+            }
+            false => None,
+        }
+    }
+}
+
 fn main() {
     /*
     Notes:
@@ -131,20 +270,31 @@ fn main() {
     access to all the iterator methods. We can do this because all
     iterators implement the IntoIterator trait.
     */
-    let fahr_to_cels = FahrToCels::default();
-    let cels_to_fahr = CelsToFahr::default();
+    let cels_to_fahr2 = CelsToFahr2::default();
 
-    print_table(&mut fahr_to_cels.clone(), ("F", "C"));
+    let fahr_to_cels2 = FahrToCels2::default();
 
-    println!("\n\n\n");
-
-    print_table(&mut fahr_to_cels.into_iter().rev(), ("F", "C"));
-
-    println!("\n\n\n");
-
-    print_table(&mut cels_to_fahr.clone(), ("C", "F"));
+    print_table2(
+        ForwardIterator::new(fahr_to_cels2.clone(), 20.0),
+        ("F", "C"),
+    );
 
     println!("\n\n\n");
 
-    print_table(&mut cels_to_fahr.into_iter().rev(), ("C", "F"));
+    print_table2(
+        BackwardsIterator::new(fahr_to_cels2.clone(), 20.0),
+        ("F", "C"),
+    );
+
+    print_table2(
+        ForwardIterator::new(cels_to_fahr2.clone(), 10.0),
+        ("C", "F"),
+    );
+
+    println!("\n\n\n");
+
+    print_table2(
+        BackwardsIterator::new(cels_to_fahr2.clone(), 10.0),
+        ("C", "F"),
+    );
 }
