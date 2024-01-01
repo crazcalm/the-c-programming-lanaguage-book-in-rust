@@ -2,6 +2,7 @@ use std::env;
 use std::fmt;
 use std::fs;
 use std::io;
+use std::io::Read;
 
 pub trait CharacterVisitor {
     fn visit<T: CharacterVisitee + fmt::Debug>(&mut self, node: &T);
@@ -34,11 +35,7 @@ impl CharacterVisitee for Character {
 pub fn get_content(file_path: &str) -> io::Result<String> {
     if file_path.eq("-") {
         let mut input = String::new();
-        for line in io::stdin().lines() {
-            input.push_str(&line.unwrap());
-            input.push_str("\n");
-        }
-
+        io::stdin().read_to_string(&mut input)?;
         Ok(input)
     } else {
         fs::read_to_string(file_path)
