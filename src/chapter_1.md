@@ -89,3 +89,74 @@ We also have to handle the mutability of the `fahr` variable. In the C program, 
 ```
 
 The Rust print formatting syntax is not too different from C. For example, the `4.0` in `{:4.0}` means the same thing it did in the C code. The differences are that type did not need to be specified, which resulted in the `f` being dropped. The `4.0` is behind a `:` in Rust because the value in front of the `:` specifies which argument will be used for this string substitution and, when not specified (like we are doing here), it defaults to index numbers of the passed in arguments in order. So `println!("{:4.0} {:6.1}", fahr, celsius);` is equal to `println!("{0:4.0} {1:6.1}", fahr, celsius);` where 0 points to the `fahr` argument and 1 points to the `celsius` argument.
+
+## Exercise 1-3
+Modify the temperature conversion program to print a heading above the table.
+
+To complete this exercise, we can add a print statement before the loop that creates the table. In C, we do that by adding a `printf` statement: 
+```c
+{{#include ../chapter_1/c-programs/exercise_1-3/exercise_1-3.c}}
+```
+
+```
+❯ ./a.out 
+  F      C
+  0  -17.8
+ 20   -6.7
+ 40    4.4
+ 60   15.6
+ 80   26.7
+100   37.8
+120   48.9
+140   60.0
+160   71.1
+180   82.2
+200   93.3
+220  104.4
+240  115.6
+260  126.7
+280  137.8
+300  148.9
+```
+
+In Rust, I had to fiddle with the `print!` macro a bit to get everything lined up right. In the end, I used the `{:>4}` syntax, where `>4` means that the argument is right-aligned with width 4. 
+
+```rust
+{{#include ../chapter_1/exercise_1-3_new/src/main.rs}}
+```
+
+## Exercise 1-4
+Write a program to print the corresponding Celsius to Fahrenheit table.
+
+This calls for the swapping of `celsius` and `fahr` within our code as well as using the formula to convert Celsius to Fahrenheit. Outside of these changes, the C and Rust programs are more or less identical to the previous version of the code.
+
+```C
+{{#include ../chapter_1/c-programs/exercise_1-4/exercise_1-4.c}}
+```
+
+```
+❯ ./a.out 
+  C      F
+  0   32.0
+ 20   68.0
+ 40  104.0
+ 60  140.0
+ 80  176.0
+100  212.0
+120  248.0
+140  284.0
+160  320.0
+180  356.0
+200  392.0
+220  428.0
+240  464.0
+260  500.0
+280  536.0
+300  572.0
+```
+
+This is what it looks like in Rust:
+
+```rust
+{{#include ../chapter_1/exercise_1-4/src/main.rs}}
+```
