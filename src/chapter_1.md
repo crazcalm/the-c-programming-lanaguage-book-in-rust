@@ -164,7 +164,7 @@ This is what it looks like in Rust:
 ## 1.3 The For Statement
 This section of the book is all about switching out the `while` loop for a `for` loop in out temperature program.
 
-```
+```C
 {{#include ../chapter_1/c-programs/fahr_cels_for_loop/fahr_cels_for_loop.c}}
 ```
 
@@ -177,3 +177,18 @@ Rust does not have the same type of `for` loop as C. Our looping mechanisms take
 ```
 
 Another notable difference between the C code is that we had to the `(fahr-32)` to a float to ensure that our multiplication with the float value of `(5.0/9.0)` would work.
+
+## Symbolic Constants
+
+This section uses symbolic constants to replace the magic number in our for loop version of the temperature program.
+
+```C
+{{#include ../chapter_1/c-programs/fahr_cels_for_loop_with_constants/fahr_cels_for_loop_with_constants.c }}
+```
+
+Rust has constants as well, but they do have to be explicitly typed. It should also be noted that all of our constants are not `i32`. The `step_by` method requires a `usize`, which makes sense because you cannot negatively/unconsume iterators. As such, the `STEP` constant is of type `usize`.
+
+```rust
+{{#include ../chapter_1/fahr_cels_for_loop_with_constants/src/main.rs}}
+```
+

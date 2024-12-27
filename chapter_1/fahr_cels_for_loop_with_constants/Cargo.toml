@@ -1,0 +1,6 @@
+[package]
+name = "fahr_cels_for_loop_with_constants"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
