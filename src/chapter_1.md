@@ -192,3 +192,26 @@ Rust has constants as well, but they do have to be explicitly typed. It should a
 {{#include ../chapter_1/fahr_cels_for_loop_with_constants/src/main.rs}}
 ```
 
+## A Collection of Useful Programs
+
+This sections was my first stumbling block in the book because I hyper focus on C's `getchar` and `putchar` functions. For those who don't know, `getchar` allows you to fetch the next input character input (usually from the terminal -- AKA stdin). The `putchar` function is the compliment operations and, in this sections, allows you to write a character to stdout.
+
+On this attempt of going through the book, I'm focusing on end functionality and not code operations.
+
+### File Copying
+
+The simpliest example of a file copy program is one that copies from the source to the destination one character at a time.
+
+```C
+{{#include ../chapter_1/c-programs/file_copy/file_copy.c}}
+```
+
+The `EOF` (End of File) constants, which is used to represent the value returned at the end of a file, is defined in [stdio.c](https://github.com/bminor/glibc/blob/7fa9e786b6e8f78675ecc30d7eaa200e1ee259b9/libio/stdio.h#L105). Traditionally, `EOF` is either -1 or 0, but more importantly, it should be noted that `EOF` is not of type `char`. This distinction between `int` and `char` is what allows `EOF` to be effective as a end of file marker. It should also be noted that out variable `c` in our program is of type `int`. This is so that it can hold both `chars`, which can be represented as itegers, and `EOF`.
+
+The Rust version of this code does not closely mirror the C code because we handle the consumptions of strings differently. After importing `std::io` to give us access to the stdin input, we are provided with a method that gives us access to the input one line at a time. To match the C code, we then have to extract the `chars` from the line and print them out individually. Due to this unnecessary work, we are forced to manually add the `\n` back into the input after each line iteration. 
+
+```rust
+{{#include ../chapter_1/file_copy/src/main.rs }}
+```
+
+
