@@ -160,3 +160,20 @@ This is what it looks like in Rust:
 ```rust
 {{#include ../chapter_1/exercise_1-4/src/main.rs}}
 ```
+
+## 1.3 The For Statement
+This section of the book is all about switching out the `while` loop for a `for` loop in out temperature program.
+
+```
+{{#include ../chapter_1/c-programs/fahr_cels_for_loop/fahr_cels_for_loop.c}}
+```
+
+The for loop is broken up into three parts; the initialization part (`fahr = 0;`), the conditional part that dictates whether or not the loop ends (`fahr <= 300;`) and the step that increments of decrements the looping variable (`fahr = fahr + 20`). It should also be noted that `fahr` got changed to an int and is now represented as an digit (`d`) in the string formatting (`printf("%4d")`).
+
+Rust does not have the same type of `for` loop as C. Our looping mechanisms take an iterator that produces the values we need. The Rust standard library does have a `Range` operator that will allow us to create and iterator with numbers from 0 to 300, but the `Range` operator does not have a step functionality. However, iterators themselves have a `step_by` method that will allow us to advance through unwanted steps of the iteration. In using this, our code will look like the C code, but unlike the C for loop, we will be iterating through all the numbers between 0 and 300. To be fair, there are other ways of writing this code that are more accurate the to C code operations, but I am choosing not to use them in an attempt to keep the code slim and comparable to the C code.
+
+```rust
+{{#include ../chapter_1/fahr_cels_for_loop/src/main.rs}}
+```
+
+Another notable difference between the C code is that we had to the `(fahr-32)` to a float to ensure that our multiplication with the float value of `(5.0/9.0)` would work.
