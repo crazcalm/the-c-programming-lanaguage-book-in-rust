@@ -214,4 +214,44 @@ The Rust version of this code does not closely mirror the C code because we hand
 {{#include ../chapter_1/file_copy/src/main.rs }}
 ```
 
+### Character counting
 
+The character counting section is meant to introduce the `++` incrementor, which means to increment by one. You can write `nc = nc + 1` but `++nc` is more concise. There is also a `--` operator to decrement by 1. The operators `++` and `--` can be either prefix operators (`++nc`) or postfix (`nc++`); The difference between the two is explained in chapter 2.
+
+The character counting programming accumulates its count in `long` variable instead of an `int`. On a PDP-11 the maximum value of an int is 32767, and it would take relatively little input to overflow the counter if it were declared `int`. The conversion specification `%ld` signals to `printf` that the corresponding argument is a `long` integer. To cope with even bigger numbers, you can use a `double` (double length float). We will also use a `for` loop instead of a `while`, to illustrate an laternative way to write the loop.
+
+```C
+{{#include ../chapter_1/c-programs/character_counting/character_counting.c }}
+```
+
+```
+❯ ./a.out < character_counting.c
+146
+```
+
+Rust has integer system is pretty nice and I probably should have it sooner. So, we have `i32`, `i64`, and `i128`, which are pretty self explanatory, but we also have `isize`. The `isize` type is the i-size that is matched to your operating system. If you are running an 32bit system, then `isize` is `i32`. If you are running a `i64` system, then `isize` is `i64`. The complement all of this also exists for unsigned integers.
+
+For the character counting program, we are going to explicitly set out counting variable to `i128`. We will also have to manually count the `\n` characters that are consumed by the iterator splitting the text by `\n`.
+
+```rust
+{{#include ../chapter_1/character_counting/src/main.rs }}
+```
+
+### Line Counting
+
+We get our first control flow conditional statement via an `if` statement!
+
+```C
+{{#include ../chapter_1/c-programs/line_counting/line_counting.c }}
+```
+
+```
+❯ ./a.out < line_counting.c
+13
+```
+
+This Rust program is extremely straight forward because we have been iterating over our content by lines this entire time.
+
+```rust
+{{#include ../chapter_1/line_counting/src/main.rs}}
+```
