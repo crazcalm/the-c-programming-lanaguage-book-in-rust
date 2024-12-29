@@ -90,7 +90,7 @@ We also have to handle the mutability of the `fahr` variable. In the C program, 
 
 The Rust print formatting syntax is not too different from C. For example, the `4.0` in `{:4.0}` means the same thing it did in the C code. The differences are that type did not need to be specified, which resulted in the `f` being dropped. The `4.0` is behind a `:` in Rust because the value in front of the `:` specifies which argument will be used for this string substitution and, when not specified (like we are doing here), it defaults to index numbers of the passed in arguments in order. So `println!("{:4.0} {:6.1}", fahr, celsius);` is equal to `println!("{0:4.0} {1:6.1}", fahr, celsius);` where 0 points to the `fahr` argument and 1 points to the `celsius` argument.
 
-## Exercise 1-3
+### Exercise 1-3
 Modify the temperature conversion program to print a heading above the table.
 
 To complete this exercise, we can add a print statement before the loop that creates the table. In C, we do that by adding a `printf` statement: 
@@ -125,7 +125,7 @@ In Rust, I had to fiddle with the `print!` macro a bit to get everything lined u
 {{#include ../chapter_1/exercise_1-3_new/src/main.rs}}
 ```
 
-## Exercise 1-4
+### Exercise 1-4
 Write a program to print the corresponding Celsius to Fahrenheit table.
 
 This calls for the swapping of `celsius` and `fahr` within our code as well as using the formula to convert Celsius to Fahrenheit. Outside of these changes, the C and Rust programs are more or less identical to the previous version of the code.
@@ -161,7 +161,7 @@ This is what it looks like in Rust:
 {{#include ../chapter_1/exercise_1-4/src/main.rs}}
 ```
 
-## 1.3 The For Statement
+### 1.3 The For Statement
 This section of the book is all about switching out the `while` loop for a `for` loop in out temperature program.
 
 ```C
@@ -256,7 +256,7 @@ This Rust program is extremely straight forward because we have been iterating o
 {{#include ../chapter_1/line_counting/src/main.rs}}
 ```
 
-### Excercise 1-6
+#### Excercise 1-6
 Write a program to count blanks, tabs, and newlines.
 
 This program is a reminder that if there is more than one line in the loop, you must add brackets to enclose the body of the loop...
@@ -276,7 +276,7 @@ The Rust code is not all that out of the ordinary, but I can use this opportunit
 {{#include ../chapter_1/exercise_1-6_new/src/main.rs}}
 ```
 
-### Exercise 1-7 
+#### Exercise 1-7 
 
 Write a program to copy its input to its output, replacing each string of one or more blanks by a single blank.
 
@@ -293,3 +293,40 @@ When using the same strategy to solve the exercise in Rust, the only real differ
 ```rust
 {{#include ../chapter_1/exercise_1-7_new/src/main.rs}}
 ```
+
+### Word Counting
+
+The main goal of this section is to introduce a bare-bones word couting programming using a loose definition of that counts as a word. More importantly, it introduces the `&&` (and) and `||` (or) operators that are used in conditional statements like `if` statements. Speaking of `if`, they also introduce the `if, else if, else` syntax.
+
+```C
+{{#include ../chapter_1/c-programs/word_counting/word_counting.c}}
+```
+
+```
+❯ ./a.out < word_counting.c
+24 81 412
+```
+
+Rust uses `&&` and `||` as well as `if, else if, else`, so the new concepts can be directly put into the Rust code as is.
+
+```rust
+{{#include ../chapter_1/word_counting/src/main.rs}}
+```
+
+#### Exercise 1-10
+Write a program which prints the words in its input, one per line.
+
+The authors of The C Programming Language were very nice in the sense that the code examples in the section outline thw majority of what they expect this code to look like. I say that because I would normally save the "word" to a variable where I can slowly build up the string over time, but we have not been introduced to strings yet, so that is not an option. At this point in time, all we really know is that we can print characters to the screen one by one and choose when a new line occurs.
+
+```C
+{{#include ../chapter_1/c-programs/exercise_1-10/exercise_1-10.c}}
+```
+
+I followed the same programming outline when writing the Rust code.
+
+```rust
+{{#include ../chapter_1/exercise_1-10_new/src/main.rs}}
+```
+
+As a programmer that was raised in the error of everything must have a unit test, using different variation of print statements to solve a problem like this would never had occurred to me. Though this is something I do not think I can ever use in a serious context, I appreciate this entire series of slightly modifying small programs to achieve your goal.
+
