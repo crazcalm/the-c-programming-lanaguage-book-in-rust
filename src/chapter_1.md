@@ -255,3 +255,41 @@ This Rust program is extremely straight forward because we have been iterating o
 ```rust
 {{#include ../chapter_1/line_counting/src/main.rs}}
 ```
+
+### Excercise 1-6
+Write a program to count blanks, tabs, and newlines.
+
+This program is a reminder that if there is more than one line in the loop, you must add brackets to enclose the body of the loop...
+
+```C
+{{#include ../chapter_1/c-programs/exercise_1-6/exercise_1-6.c}}
+```
+
+```
+❯ ./a.out < exercise_1-6.c
+105
+```
+
+The Rust code is not all that out of the ordinary, but I can use this opportunity to state that Rust also uses single quotes to denote a char (For example: `'\n'` is a single char). I should also mention that `char` has a `eq` method to check equality and you must pass a reference to the `char` that you want to check against. So though references will not be covered in the C Programming Language Book for another few sections, you must know about them in Rust if you want to compare equalities.
+
+```rust
+{{#include ../chapter_1/exercise_1-6_new/src/main.rs}}
+```
+
+### Exercise 1-7 
+
+Write a program to copy its input to its output, replacing each string of one or more blanks by a single blank.
+
+This exercise is a subtle reminder that tabs and spaces are not the same thing and that we were only asked to act on the spaces. So, if you want the output to look "right", you need to not use tabs in your source code.
+
+I do not know if this is "cheating", but I did use a state machine in my solution. With regard to programming techniques, everthing I used has already been introduced, but this techinique gets demonstrated in the next example...
+
+```C
+{{#include ../chapter_1/c-programs/exercise_1-7/exercise_1-7.c}}
+```
+
+When using the same strategy to solve the exercise in Rust, the only real difference is that I have to add back the new lines to the output so that it looks "correct".
+
+```rust
+{{#include ../chapter_1/exercise_1-7_new/src/main.rs}}
+```
