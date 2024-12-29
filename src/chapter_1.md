@@ -90,7 +90,7 @@ We also have to handle the mutability of the `fahr` variable. In the C program, 
 
 The Rust print formatting syntax is not too different from C. For example, the `4.0` in `{:4.0}` means the same thing it did in the C code. The differences are that type did not need to be specified, which resulted in the `f` being dropped. The `4.0` is behind a `:` in Rust because the value in front of the `:` specifies which argument will be used for this string substitution and, when not specified (like we are doing here), it defaults to index numbers of the passed in arguments in order. So `println!("{:4.0} {:6.1}", fahr, celsius);` is equal to `println!("{0:4.0} {1:6.1}", fahr, celsius);` where 0 points to the `fahr` argument and 1 points to the `celsius` argument.
 
-## Exercise 1-3
+### Exercise 1-3
 Modify the temperature conversion program to print a heading above the table.
 
 To complete this exercise, we can add a print statement before the loop that creates the table. In C, we do that by adding a `printf` statement: 
@@ -125,7 +125,7 @@ In Rust, I had to fiddle with the `print!` macro a bit to get everything lined u
 {{#include ../chapter_1/exercise_1-3_new/src/main.rs}}
 ```
 
-## Exercise 1-4
+### Exercise 1-4
 Write a program to print the corresponding Celsius to Fahrenheit table.
 
 This calls for the swapping of `celsius` and `fahr` within our code as well as using the formula to convert Celsius to Fahrenheit. Outside of these changes, the C and Rust programs are more or less identical to the previous version of the code.
@@ -161,7 +161,7 @@ This is what it looks like in Rust:
 {{#include ../chapter_1/exercise_1-4/src/main.rs}}
 ```
 
-## 1.3 The For Statement
+### 1.3 The For Statement
 This section of the book is all about switching out the `while` loop for a `for` loop in out temperature program.
 
 ```C
@@ -191,4 +191,142 @@ Rust has constants as well, but they do have to be explicitly typed. It should a
 ```rust
 {{#include ../chapter_1/fahr_cels_for_loop_with_constants/src/main.rs}}
 ```
+
+## A Collection of Useful Programs
+
+This sections was my first stumbling block in the book because I hyper focus on C's `getchar` and `putchar` functions. For those who don't know, `getchar` allows you to fetch the next input character input (usually from the terminal -- AKA stdin). The `putchar` function is the compliment operations and, in this sections, allows you to write a character to stdout.
+
+On this attempt of going through the book, I'm focusing on end functionality and not code operations.
+
+### File Copying
+
+The simpliest example of a file copy program is one that copies from the source to the destination one character at a time.
+
+```C
+{{#include ../chapter_1/c-programs/file_copy/file_copy.c}}
+```
+
+The `EOF` (End of File) constants, which is used to represent the value returned at the end of a file, is defined in [stdio.c](https://github.com/bminor/glibc/blob/7fa9e786b6e8f78675ecc30d7eaa200e1ee259b9/libio/stdio.h#L105). Traditionally, `EOF` is either -1 or 0, but more importantly, it should be noted that `EOF` is not of type `char`. This distinction between `int` and `char` is what allows `EOF` to be effective as a end of file marker. It should also be noted that out variable `c` in our program is of type `int`. This is so that it can hold both `chars`, which can be represented as itegers, and `EOF`.
+
+The Rust version of this code does not closely mirror the C code because we handle the consumptions of strings differently. After importing `std::io` to give us access to the stdin input, we are provided with a method that gives us access to the input one line at a time. To match the C code, we then have to extract the `chars` from the line and print them out individually. Due to this unnecessary work, we are forced to manually add the `\n` back into the input after each line iteration. 
+
+```rust
+{{#include ../chapter_1/file_copy/src/main.rs }}
+```
+
+### Character counting
+
+The character counting section is meant to introduce the `++` incrementor, which means to increment by one. You can write `nc = nc + 1` but `++nc` is more concise. There is also a `--` operator to decrement by 1. The operators `++` and `--` can be either prefix operators (`++nc`) or postfix (`nc++`); The difference between the two is explained in chapter 2.
+
+The character counting programming accumulates its count in `long` variable instead of an `int`. On a PDP-11 the maximum value of an int is 32767, and it would take relatively little input to overflow the counter if it were declared `int`. The conversion specification `%ld` signals to `printf` that the corresponding argument is a `long` integer. To cope with even bigger numbers, you can use a `double` (double length float). We will also use a `for` loop instead of a `while`, to illustrate an laternative way to write the loop.
+
+```C
+{{#include ../chapter_1/c-programs/character_counting/character_counting.c }}
+```
+
+```
+❯ ./a.out < character_counting.c
+146
+```
+
+Rust has integer system is pretty nice and I probably should have it sooner. So, we have `i32`, `i64`, and `i128`, which are pretty self explanatory, but we also have `isize`. The `isize` type is the i-size that is matched to your operating system. If you are running an 32bit system, then `isize` is `i32`. If you are running a `i64` system, then `isize` is `i64`. The complement all of this also exists for unsigned integers.
+
+For the character counting program, we are going to explicitly set out counting variable to `i128`. We will also have to manually count the `\n` characters that are consumed by the iterator splitting the text by `\n`.
+
+```rust
+{{#include ../chapter_1/character_counting/src/main.rs }}
+```
+
+### Line Counting
+
+We get our first control flow conditional statement via an `if` statement!
+
+```C
+{{#include ../chapter_1/c-programs/line_counting/line_counting.c }}
+```
+
+```
+❯ ./a.out < line_counting.c
+13
+```
+
+This Rust program is extremely straight forward because we have been iterating over our content by lines this entire time.
+
+```rust
+{{#include ../chapter_1/line_counting/src/main.rs}}
+```
+
+#### Excercise 1-6
+Write a program to count blanks, tabs, and newlines.
+
+This program is a reminder that if there is more than one line in the loop, you must add brackets to enclose the body of the loop...
+
+```C
+{{#include ../chapter_1/c-programs/exercise_1-6/exercise_1-6.c}}
+```
+
+```
+❯ ./a.out < exercise_1-6.c
+105
+```
+
+The Rust code is not all that out of the ordinary, but I can use this opportunity to state that Rust also uses single quotes to denote a char (For example: `'\n'` is a single char). I should also mention that `char` has a `eq` method to check equality and you must pass a reference to the `char` that you want to check against. So though references will not be covered in the C Programming Language Book for another few sections, you must know about them in Rust if you want to compare equalities.
+
+```rust
+{{#include ../chapter_1/exercise_1-6_new/src/main.rs}}
+```
+
+#### Exercise 1-7 
+
+Write a program to copy its input to its output, replacing each string of one or more blanks by a single blank.
+
+This exercise is a subtle reminder that tabs and spaces are not the same thing and that we were only asked to act on the spaces. So, if you want the output to look "right", you need to not use tabs in your source code.
+
+I do not know if this is "cheating", but I did use a state machine in my solution. With regard to programming techniques, everthing I used has already been introduced, but this techinique gets demonstrated in the next example...
+
+```C
+{{#include ../chapter_1/c-programs/exercise_1-7/exercise_1-7.c}}
+```
+
+When using the same strategy to solve the exercise in Rust, the only real difference is that I have to add back the new lines to the output so that it looks "correct".
+
+```rust
+{{#include ../chapter_1/exercise_1-7_new/src/main.rs}}
+```
+
+### Word Counting
+
+The main goal of this section is to introduce a bare-bones word couting programming using a loose definition of that counts as a word. More importantly, it introduces the `&&` (and) and `||` (or) operators that are used in conditional statements like `if` statements. Speaking of `if`, they also introduce the `if, else if, else` syntax.
+
+```C
+{{#include ../chapter_1/c-programs/word_counting/word_counting.c}}
+```
+
+```
+❯ ./a.out < word_counting.c
+24 81 412
+```
+
+Rust uses `&&` and `||` as well as `if, else if, else`, so the new concepts can be directly put into the Rust code as is.
+
+```rust
+{{#include ../chapter_1/word_counting/src/main.rs}}
+```
+
+#### Exercise 1-10
+Write a program which prints the words in its input, one per line.
+
+The authors of The C Programming Language were very nice in the sense that the code examples in the section outline thw majority of what they expect this code to look like. I say that because I would normally save the "word" to a variable where I can slowly build up the string over time, but we have not been introduced to strings yet, so that is not an option. At this point in time, all we really know is that we can print characters to the screen one by one and choose when a new line occurs.
+
+```C
+{{#include ../chapter_1/c-programs/exercise_1-10/exercise_1-10.c}}
+```
+
+I followed the same programming outline when writing the Rust code.
+
+```rust
+{{#include ../chapter_1/exercise_1-10_new/src/main.rs}}
+```
+
+As a programmer that was raised in the error of everything must have a unit test, using different variation of print statements to solve a problem like this would never had occurred to me. Though this is something I do not think I can ever use in a serious context, I appreciate this entire series of slightly modifying small programs to achieve your goal.
 
